@@ -1,0 +1,651 @@
+/* 
+ * 상담 FAQ 시뮬레이터 - CSS 디자인 시스템
+ * 작성일: 2026-06-05
+ * 디자인 키워드: 글래스모피즘, 프리미엄 다크/라이트 하이브리드, HSL 커스텀 테마
+ */
+
+/* 1. 디자인 토큰 및 변수 선언 */
+:root {
+  /* HSL 조화 컬러 팔레트 */
+  --hue-primary: 222; /* 신뢰감을 주는 슬레이트 블루 계열 */
+  --hue-success: 142; /* 정답 확인에 쓰는 자연스러운 초록 계열 */
+  
+  --primary: hsl(var(--hue-primary), 85%, 60%);
+  --primary-hover: hsl(var(--hue-primary), 85%, 50%);
+  --primary-light: hsl(var(--hue-primary), 85%, 95%);
+  --success: hsl(var(--hue-success), 70%, 45%);
+  --success-light: hsl(var(--hue-success), 70%, 95%);
+  
+  /* 다크 테마 배경 및 텍스트 조합 */
+  --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+  --text-main: #2d3748;
+  --text-muted: #718096;
+  --border-color: rgba(203, 213, 224, 0.5);
+  
+  /* 글래스모피즘 컴포넌트용 */
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.6);
+  --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.08);
+  
+  --pane-bg: rgba(255, 255, 255, 0.85);
+  
+  /* 그림자 & 트랜지션 */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.08);
+  --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+}
+
+/* 2. 기본 리셋 및 전역 스타일 */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Outfit', 'Noto Sans KR', sans-serif;
+  background: var(--bg-gradient);
+  color: var(--text-main);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow-x: hidden;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 3. 앱 컨테이너 레이아웃 */
+.app-container {
+  width: 95vw;
+  max-width: 1400px;
+  height: 90vh;
+  min-height: 650px;
+  display: flex;
+  flex-direction: column;
+  background: var(--glass-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--glass-shadow);
+  overflow: hidden;
+  animation: app-appear 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* 4. 헤더 영역 스타일 */
+.app-header {
+  padding: 16px 32px;
+  background: rgba(255, 255, 255, 0.4);
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.header-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo-icon {
+  width: 28px;
+  height: 28px;
+  color: var(--primary);
+  filter: drop-shadow(0 2px 4px rgba(99, 102, 241, 0.2));
+}
+
+.header-logo h1 {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  color: hsl(var(--hue-primary), 60%, 25%);
+}
+
+/* 프로그레스 바 */
+.progress-container {
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.progress-info {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.progress-label {
+  color: var(--text-muted);
+}
+
+.progress-count strong {
+  color: var(--primary);
+  font-weight: 700;
+}
+
+.progress-bar-bg {
+  width: 100%;
+  height: 8px;
+  background: rgba(203, 213, 224, 0.6);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary) 0%, hsl(var(--hue-primary), 85%, 70%) 100%);
+  border-radius: 4px;
+  transition: width var(--transition-normal);
+}
+
+/* 5. 메인 콘텐츠 및 스크린 전환 */
+.main-content {
+  flex-grow: 1;
+  position: relative;
+  overflow: hidden;
+}
+
+.screen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity var(--transition-normal), transform var(--transition-normal);
+  transform: translateY(10px);
+}
+
+.screen.active {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+/* 6. 분할 패널 구조 */
+.split-container {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.pane {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--pane-bg);
+  overflow-y: auto;
+  transition: flex var(--transition-normal), opacity var(--transition-normal);
+}
+
+.left-pane {
+  border-right: 1px solid var(--border-color);
+}
+
+.right-pane {
+  background: rgba(250, 251, 253, 0.95);
+  box-shadow: -4px 0 24px rgba(0, 0, 0, 0.02);
+}
+
+.right-pane.hidden {
+  flex: 0;
+  width: 0;
+  min-width: 0;
+  opacity: 0;
+  pointer-events: none;
+  overflow: hidden;
+  border-left: none;
+}
+
+/* 패널 헤더 */
+.pane-header {
+  padding: 24px 32px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid rgba(228, 232, 240, 0.6);
+  flex-shrink: 0;
+}
+
+.pane-badge {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 4px;
+  background: var(--primary-light);
+  color: var(--primary);
+  letter-spacing: 0.5px;
+}
+
+.pane-badge.success {
+  background: var(--success-light);
+  color: var(--success);
+}
+
+.pane-header h2 {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1a202c;
+}
+
+/* 7. 대화 시뮬레이션 영역 (채팅 느낌) */
+.chat-area {
+  flex-grow: 1;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  overflow-y: auto;
+}
+
+.chat-bubble {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  max-width: 90%;
+}
+
+.avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+  box-shadow: var(--shadow-sm);
+}
+
+.client-avatar {
+  background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+  color: #fff;
+}
+
+.client-avatar svg {
+  width: 24px;
+  height: 24px;
+}
+
+.counselor-avatar {
+  background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+  color: #fff;
+}
+
+.counselor-avatar svg {
+  width: 22px;
+  height: 22px;
+}
+
+.bubble-content {
+  flex-grow: 1;
+}
+
+.bubble-sender {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+
+.bubble-text {
+  background: #fff;
+  padding: 16px 20px;
+  border-radius: 0 var(--radius-md) var(--radius-md) var(--radius-md);
+  box-shadow: var(--shadow-md);
+  border: 1px solid rgba(228, 232, 240, 0.8);
+  font-size: 16px;
+  font-weight: 500;
+  color: #2d3748;
+  word-break: keep-all;
+}
+
+.bubble-meta {
+  display: inline-block;
+  margin-top: 8px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--primary);
+  background: var(--primary-light);
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+
+/* 상담원 입력 풍선 */
+.counselor-bubble {
+  align-self: flex-start;
+  width: 100%;
+}
+
+.counselor-bubble .bubble-content {
+  width: 100%;
+}
+
+.bubble-input-wrapper {
+  background: #fff;
+  border-radius: 0 var(--radius-md) var(--radius-md) var(--radius-md);
+  box-shadow: var(--shadow-md);
+  border: 1.5px solid rgba(203, 213, 224, 0.8);
+  overflow: hidden;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.bubble-input-wrapper:focus-within {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
+}
+
+.bubble-input-wrapper textarea {
+  width: 100%;
+  height: 140px;
+  padding: 18px;
+  border: none;
+  outline: none;
+  font-family: inherit;
+  font-size: 15px;
+  color: var(--text-main);
+  resize: none;
+  line-height: 1.6;
+}
+
+.bubble-input-wrapper textarea::placeholder {
+  color: #a0aec0;
+}
+
+/* 8. 정답 패널 구조 */
+.solution-container {
+  flex-grow: 1;
+  padding: 32px;
+  overflow-y: auto;
+}
+
+.solution-card {
+  background: #fff;
+  border-radius: var(--radius-md);
+  border: 1.5px solid var(--border-color);
+  box-shadow: var(--shadow-md);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.solution-header {
+  border-bottom: 1px solid rgba(228, 232, 240, 0.8);
+  padding-bottom: 12px;
+}
+
+.category-tag {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--success);
+  background: var(--success-light);
+  padding: 3px 8px;
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+
+.solution-header h3 {
+  font-size: 17px;
+  font-weight: 700;
+  color: #1a202c;
+}
+
+.solution-body {
+  font-size: 15px;
+  color: #2d3748;
+  white-space: pre-wrap;
+  word-break: keep-all;
+  line-height: 1.7;
+}
+
+.solution-tip {
+  display: flex;
+  gap: 10px;
+  background: hsl(var(--hue-primary), 90%, 97%);
+  border-radius: var(--radius-sm);
+  padding: 12px 16px;
+  margin-top: 10px;
+}
+
+.tip-icon {
+  width: 18px;
+  height: 18px;
+  color: var(--primary);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.solution-tip span {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: hsl(var(--hue-primary), 60%, 35%);
+}
+
+/* 9. 제어 바 및 버튼 */
+.control-bar {
+  padding: 20px 32px;
+  background: rgba(255, 255, 255, 0.4);
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  justify-content: flex-end;
+  flex-shrink: 0;
+}
+
+.btn {
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  padding: 14px 28px;
+  border-radius: var(--radius-md);
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all var(--transition-fast);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: #fff;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: var(--primary-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25);
+}
+
+.btn-primary:disabled {
+  background: #cbd5e0;
+  color: #a0aec0;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.btn-secondary {
+  background: var(--success);
+  color: #fff;
+}
+
+.btn-secondary:hover {
+  background: hsl(var(--hue-success), 70%, 40%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.25);
+}
+
+.btn-icon {
+  width: 18px;
+  height: 18px;
+  transition: transform var(--transition-fast);
+}
+
+.btn:hover .btn-icon {
+  transform: translateX(2px);
+}
+
+/* 10. 완료 화면 */
+#finish-screen {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+  background: radial-gradient(circle at center, #ffffff 0%, #f3f5f9 100%);
+}
+
+.finish-card {
+  background: #fff;
+  border-radius: var(--radius-lg);
+  border: 1.5px solid var(--border-color);
+  box-shadow: var(--shadow-md);
+  max-width: 600px;
+  width: 100%;
+  padding: 48px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.finish-icon-wrapper {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: var(--success-light);
+  color: var(--success);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 8px;
+  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.15);
+}
+
+.finish-icon {
+  width: 44px;
+  height: 44px;
+}
+
+.finish-card h2 {
+  font-size: 26px;
+  font-weight: 700;
+  color: #1a202c;
+  letter-spacing: -0.5px;
+}
+
+.finish-card p {
+  font-size: 16px;
+  color: var(--text-muted);
+  line-height: 1.8;
+  word-break: keep-all;
+}
+
+.finish-actions {
+  margin-top: 16px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+/* 11. 부드러운 전환 애니메이션 키프레임 */
+@keyframes app-appear {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.animate-scale-in {
+  animation: scale-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* 12. 미디어 쿼리 (반응형 대응) */
+@media (max-width: 992px) {
+  .app-container {
+    width: 100vw;
+    height: 100vh;
+    border-radius: 0;
+    border: none;
+  }
+  
+  .split-container {
+    flex-direction: column;
+  }
+  
+  .pane {
+    flex: 1 1 auto;
+    height: auto;
+  }
+  
+  .left-pane {
+    border-right: none;
+    border-bottom: 1px solid var(--border-color);
+  }
+  
+  .right-pane {
+    box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.02);
+  }
+  
+  .right-pane.hidden {
+    flex: 0;
+    height: 0;
+    opacity: 0;
+  }
+
+  .bubble-input-wrapper textarea {
+    height: 100px;
+  }
+}
