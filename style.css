@@ -503,7 +503,7 @@ body {
   box-shadow: var(--shadow-sm);
 }
 
-.btn:active {
+.btn:active:not(:disabled) {
   transform: translateY(1px);
 }
 
@@ -531,7 +531,7 @@ body {
   color: #fff;
 }
 
-.btn-secondary:hover {
+.btn-secondary:hover:not(:disabled) {
   background: hsl(var(--hue-success), 70%, 40%);
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(34, 197, 94, 0.25);
@@ -543,7 +543,7 @@ body {
   transition: transform var(--transition-fast);
 }
 
-.btn:hover .btn-icon {
+.btn:hover:not(:disabled) .btn-icon {
   transform: translateX(2px);
 }
 
