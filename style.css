@@ -550,25 +550,26 @@ body {
 /* 10. 완료 화면 */
 #finish-screen {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  justify-content: flex-start;
   align-items: center;
-  padding: 40px;
+  padding: 48px 32px;
   background: radial-gradient(circle at center, #ffffff 0%, #f3f5f9 100%);
+  overflow-y: auto; /* 완료 화면 전체에 스크롤 생성 */
 }
 
 .finish-card {
-  background: #fff;
-  border-radius: var(--radius-lg);
-  border: 1.5px solid var(--border-color);
-  box-shadow: var(--shadow-md);
+  background: transparent;
+  border: none;
+  box-shadow: none;
   max-width: 1000px;
-  width: 90%;
-  padding: 36px;
+  width: 100%;
+  padding: 0;
   text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 20px;
+  gap: 24px;
 }
 
 .finish-icon-wrapper {
@@ -693,15 +694,15 @@ body {
 /* 13. 학습 결과 복습 영역 스타일 */
 .review-section {
   width: 100%;
-  margin-top: 10px;
+  margin-top: 24px;
   text-align: left;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 16px;
 }
 
 .review-section h3 {
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 700;
   color: #1a202c;
   border-bottom: 2px solid var(--primary-light);
@@ -709,107 +710,101 @@ body {
 }
 
 .review-sub {
-  font-size: 13.5px;
+  font-size: 14.5px;
   color: var(--text-muted);
 }
 
 .review-list {
-  max-height: 380px;
-  overflow-y: auto;
-  padding-right: 8px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
-}
-
-/* 스크롤바 커스텀 */
-.review-list::-webkit-scrollbar {
-  width: 6px;
-}
-.review-list::-webkit-scrollbar-track {
-  background: #f1f5f9;
-  border-radius: 3px;
-}
-.review-list::-webkit-scrollbar-thumb {
-  background: #cbd5e0;
-  border-radius: 3px;
-}
-.review-list::-webkit-scrollbar-thumb:hover {
-  background: #a0aec0;
+  gap: 20px;
+  width: 100%;
 }
 
 .review-item {
-  background: #f8fafc;
+  background: #fff;
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
-  padding: 20px;
+  padding: 24px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 16px;
+  box-shadow: var(--shadow-sm);
 }
 
 .review-q {
-  font-size: 15px;
+  font-size: 17px;
   font-weight: 700;
   color: var(--text-main);
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 12px;
+  border-bottom: 1px solid rgba(228, 232, 240, 0.8);
+  padding-bottom: 12px;
 }
 
 .review-q-cat {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
   color: var(--primary);
   background: var(--primary-light);
-  padding: 3px 8px;
-  border-radius: 4px;
+  padding: 4px 10px;
+  border-radius: 6px;
   flex-shrink: 0;
 }
 
 .review-answers-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 16px;
+  gap: 24px;
 }
 
-.review-ans-box {
-  background: #fff;
-  border-radius: var(--radius-sm);
-  padding: 14px 16px;
-  border: 1px solid rgba(228, 232, 240, 0.8);
+.review-ans-group {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  box-shadow: var(--shadow-sm);
+  gap: 8px;
+  padding: 4px 0 4px 16px;
 }
 
-.review-ans-title {
-  font-size: 12px;
+.review-ans-group.user {
+  border-left: 4px solid var(--primary);
+}
+
+.review-ans-group.official {
+  border-left: 4px solid var(--success);
+  background: hsl(var(--hue-success), 90%, 98.5%);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  padding: 8px 12px 8px 16px;
+}
+
+.review-ans-label {
+  font-size: 12.5px;
   font-weight: 700;
   color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
-.review-ans-content {
-  font-size: 13.5px;
-  line-height: 1.6;
+.review-ans-text {
+  font-size: 15px; /* 글씨 크기를 15px로 더 키워 가독성을 확보 */
+  line-height: 1.7;
   white-space: pre-wrap;
   word-break: keep-all;
   color: var(--text-main);
 }
 
-.review-ans-box.user {
-  border-left: 4px solid var(--primary);
-}
-
-.review-ans-box.official {
-  border-left: 4px solid var(--success);
-  background: hsl(var(--hue-success), 90%, 99%);
+.review-ans-group.official .review-ans-text {
+  color: hsl(var(--hue-success), 70%, 25%);
 }
 
 @media (max-width: 768px) {
   .review-answers-grid {
     grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  .review-ans-group {
+    padding-left: 12px;
   }
 }

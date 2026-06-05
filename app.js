@@ -185,13 +185,13 @@ function showFinishScreen() {
         <span class="review-q-cat">${q.category}</span>
       </div>
       <div class="review-answers-grid">
-        <div class="review-ans-box user">
-          <div class="review-ans-title">내가 작성한 답변</div>
-          <div class="review-ans-content">${escapeHtml(userAnswerText)}</div>
+        <div class="review-ans-group user">
+          <div class="review-ans-label">내가 작성한 답변</div>
+          <div class="review-ans-text">${escapeHtml(userAnswerText)}</div>
         </div>
-        <div class="review-ans-box official">
-          <div class="review-ans-title">기관 공식 가이드 정답</div>
-          <div class="review-ans-content">${escapeHtml(q.answer)}</div>
+        <div class="review-ans-group official">
+          <div class="review-ans-label">기관 공식 가이드 정답</div>
+          <div class="review-ans-text">${escapeHtml(q.answer)}</div>
         </div>
       </div>
     `;
