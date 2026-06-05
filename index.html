@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>상담 시 자주 묻는 질문 (FAQ) 트레이닝 퀴즈</title>
+  
+  <!-- 구글 폰트 적용 (Noto Sans KR & Outfit) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- 스타일시트 연결 -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- 상단 헤더 영역 -->
+    <header class="app-header">
+      <div class="header-logo">
+        <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+        </svg>
+        <h1>상담 FAQ 시뮬레이터</h1>
+      </div>
+      
+      <!-- 학습 진척도 게이지 -->
+      <div class="progress-container">
+        <div class="progress-info">
+          <span class="progress-label">학습 진척도</span>
+          <span class="progress-count"><strong id="current-question-num">1</strong> / <span id="total-questions-num">25</span></span>
+        </div>
+        <div class="progress-bar-bg">
+          <div id="progress-bar-fill" class="progress-bar-fill" style="width: 4%;"></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="main-content">
+      <!-- 퀴즈 플레이 화면 -->
+      <div id="quiz-screen" class="screen active">
+        <div class="split-container">
+          
+          <!-- 왼쪽 영역: 입력 패널 (대상자 질문 및 수기 답변) -->
+          <section class="pane left-pane">
+            <div class="pane-header">
+              <span class="pane-badge">Scenario</span>
+              <h2>대상자/수급자 상담 상황</h2>
+            </div>
+            
+            <div class="chat-area">
+              <!-- 대상자 질문 버블 (수급자의 실제 목소리 연출) -->
+              <div class="chat-bubble client-bubble animate-fade-in">
+                <div class="avatar client-avatar">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                  </svg>
+                </div>
+                <div class="bubble-content">
+                  <div class="bubble-sender">대상자 (수급자 / 보호자)</div>
+                  <div class="bubble-text" id="question-text">질문을 로드하고 있습니다...</div>
+                  <div class="bubble-meta" id="question-category">카테고리</div>
+                </div>
+              </div>
+
+              <!-- 상담원 답변 버블 (사용자 입력 필드) -->
+              <div class="chat-bubble counselor-bubble animate-fade-in">
+                <div class="avatar counselor-avatar">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect>
+                    <rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect>
+                    <line x1="6" y1="6" x2="6.01" y2="6"></line>
+                    <line x1="6" y1="18" x2="6.01" y2="18"></line>
+                  </svg>
+                </div>
+                <div class="bubble-content">
+                  <div class="bubble-sender">나 (상담 사회복지사)</div>
+                  <div class="bubble-input-wrapper">
+                    <textarea 
+                      id="user-answer-input" 
+                      placeholder="대상자에게 이야기하듯 친절하게 답변 내용을 적어보세요..." 
+                      autocomplete="off"
+                    ></textarea>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 하단 제어 바 -->
+            <div class="control-bar">
+              <button id="check-btn" class="btn btn-primary" disabled>
+                <span>정답 확인하기</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="btn-icon">
+                  <polyline points="9 11 12 14 22 4"></polyline>
+                  <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+                </svg>
+              </button>
+            </div>
+          </section>
+
+          <!-- 오른쪽 영역: 정답 패널 (정답 가이드 보기) -->
+          <section id="answer-pane" class="pane right-pane hidden">
+            <div class="pane-header">
+              <span class="pane-badge success">Solution</span>
+              <h2>공식 가이드 및 정답</h2>
+            </div>
+            
+            <div class="solution-container">
+              <div class="solution-card">
+                <div class="solution-header">
+                  <div class="category-tag" id="solution-category">카테고리</div>
+                  <h3>기관 공식 답변 가이드</h3>
+                </div>
+                <div class="solution-body">
+                  <p id="solution-text">로딩 중...</p>
+                </div>
+                <div class="solution-tip">
+                  <svg class="tip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="16" x2="12" y2="12"></line>
+                    <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                  </svg>
+                  <span>수기 입력한 내용과 비교해 보며 핵심 안내 사항이 포함되었는지 확인하세요.</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="control-bar">
+              <button id="next-btn" class="btn btn-secondary">
+                <span>다음 문제로 넘어가기</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="btn-icon">
+                  <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+              </button>
+            </div>
+          </section>
+
+        </div>
+      </div>
+
+      <!-- 퀴즈 완료 화면 -->
+      <div id="finish-screen" class="screen">
+        <div class="finish-card animate-scale-in">
+          <div class="finish-icon-wrapper">
+            <svg class="finish-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+              <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+          </div>
+          <h2>학습을 완료했습니다!</h2>
+          <p>상담 시 자주 묻는 질문 25문항을 모두 학습하셨습니다.<br>대상자/수급자 상담에 자신감을 갖고 실전에 임해 보세요!</p>
+          
+          <div class="finish-actions">
+            <button id="restart-btn" class="btn btn-primary">
+              <span>다시 처음부터 풀기</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="btn-icon">
+                <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- 데이터 및 비즈니스 로직 스크립트 연결 -->
+  <script src="questions.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
