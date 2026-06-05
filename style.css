@@ -383,6 +383,46 @@ body {
   display: flex;
   flex-direction: column;
   gap: 16px;
+  transition: all var(--transition-normal);
+}
+
+/* 솔루션 카드의 잠금(Locked) 상태 스타일 */
+.solution-card.locked {
+  opacity: 0.7;
+  border-style: dashed;
+  background: rgba(248, 250, 252, 0.65);
+  box-shadow: none;
+}
+
+.solution-card.locked .solution-header h3 {
+  color: var(--text-muted);
+}
+
+.solution-card.locked .solution-body {
+  color: var(--text-muted);
+  font-style: italic;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 120px;
+  text-align: center;
+  font-weight: 500;
+}
+
+.solution-card.locked .solution-tip {
+  display: none !important;
+}
+
+.btn-secondary:disabled {
+  background: #cbd5e0;
+  color: #a0aec0;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.btn-secondary:disabled .btn-icon {
+  transform: none !important;
 }
 
 .solution-header {

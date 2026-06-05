@@ -100,14 +100,14 @@
           </section>
 
           <!-- 오른쪽 영역: 정답 패널 (정답 가이드 보기) -->
-          <section id="answer-pane" class="pane right-pane hidden">
+          <section id="answer-pane" class="pane right-pane">
             <div class="pane-header">
               <span class="pane-badge success">Solution</span>
               <h2>공식 가이드 및 정답</h2>
             </div>
             
             <div class="solution-container">
-              <div class="solution-card">
+              <div class="solution-card" id="solution-card">
                 <div class="solution-header">
                   <div class="category-tag" id="solution-category">카테고리</div>
                   <h3>기관 공식 답변 가이드</h3>
@@ -127,7 +127,7 @@
             </div>
 
             <div class="control-bar">
-              <button id="next-btn" class="btn btn-secondary">
+              <button id="next-btn" class="btn btn-secondary" disabled>
                 <span>다음 문제로 넘어가기</span>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="btn-icon">
                   <polyline points="9 18 15 12 9 6"></polyline>

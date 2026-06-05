@@ -11,6 +11,7 @@ const userAnswerInput = document.getElementById('user-answer-input');
 const checkBtn = document.getElementById('check-btn');
 
 const answerPane = document.getElementById('answer-pane');
+const solutionCard = document.getElementById('solution-card');
 const solutionCategory = document.getElementById('solution-category');
 const solutionText = document.getElementById('solution-text');
 const nextBtn = document.getElementById('next-btn');
@@ -85,10 +86,11 @@ function loadQuestion() {
   // 버튼 상태 초기화 (입력값이 없으므로 비활성화)
   checkBtn.disabled = true;
   
-  // 오른쪽 정답 패널 숨기기 및 초기화
-  answerPane.classList.add('hidden');
-  solutionText.textContent = '';
-  solutionCategory.textContent = '';
+  // 오른쪽 정답 카드 잠금 및 안내 텍스트 설정 (다음 문제는 정답 확인 전까지 비활성화)
+  nextBtn.disabled = true;
+  solutionCard.classList.add('locked');
+  solutionCategory.textContent = "🔒 정답 대기 중";
+  solutionText.textContent = "왼쪽 입력창에 답변을 작성하고 [정답 확인하기] 버튼을 누르면 이곳에 정답 가이드가 표시됩니다.";
   
   // 진척도 게이지 및 숫자 텍스트 실시간 업데이트
   currentQuestionNumNum.textContent = state.currentIndex + 1;
@@ -107,19 +109,21 @@ function loadQuestion() {
 function checkAnswer() {
   const currentQuestion = state.shuffledQuestions[state.currentIndex];
   
-  // 오른쪽 정답 보기 패널에 정답 매칭 및 바인딩
+  // 오른쪽 정답 카드 잠금 해제 및 실제 내용 바인딩
+  solutionCard.classList.remove('locked');
   solutionText.textContent = currentQuestion.answer;
   solutionCategory.textContent = currentQuestion.category;
   
   // 입력창을 비활성화하여 검토 모드로 변경
   userAnswerInput.disabled = true;
   
-  // 정답 패널(오른쪽 영역)의 hidden 클래스를 지워 부드러운 슬라이딩으로 나타나게 함
-  answerPane.classList.remove('hidden');
+  // 다음 문제 넘어가기 버튼 활성화 및 포커싱
+  nextBtn.disabled = false;
+  nextBtn.focus();
   
   // 모바일 기기 대응: 화면이 위아래로 좁은 경우 정답 영역이 화면 아래로 밀리므로 스크롤을 이동시킵니다.
   if (window.innerWidth <= 992) {
-    answerPane.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    solutionCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 }
 
@@ -161,8 +165,8 @@ userAnswerInput.addEventListener('keydown', (e) => {
   if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
     e.preventDefault(); // 기본 줄바꿈 방지
     
-    // 정답 확인 버튼이 활성화되어 있을 때만 확인 처리 진행
-    if (!checkBtn.disabled && answerPane.classList.contains('hidden')) {
+    // 정답 확인 버튼이 활성화되어 있고 아직 정답이 공개되지 않은(locked) 경우에만 확인 진행
+    if (!checkBtn.disabled && solutionCard.classList.contains('locked')) {
       checkBtn.click();
     }
   }
