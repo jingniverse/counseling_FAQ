@@ -114,7 +114,7 @@ function checkAnswer() {
   
   // 오른쪽 정답 카드 잠금 해제 및 실제 내용 바인딩
   solutionCard.classList.remove('locked');
-  solutionText.textContent = currentQuestion.answer;
+  solutionText.innerHTML = currentQuestion.answer;
   solutionCategory.textContent = currentQuestion.category;
   
   // 입력창을 비활성화하여 검토 모드로 변경
@@ -191,7 +191,7 @@ function showFinishScreen() {
         </div>
         <div class="review-ans-group official">
           <div class="review-ans-label">기관 공식 가이드 정답</div>
-          <div class="review-ans-text">${escapeHtml(q.answer)}</div>
+          <div class="review-ans-text">${q.answer}</div>
         </div>
       </div>
     `;
