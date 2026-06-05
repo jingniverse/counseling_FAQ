@@ -561,9 +561,9 @@ body {
   border-radius: var(--radius-lg);
   border: 1.5px solid var(--border-color);
   box-shadow: var(--shadow-md);
-  max-width: 600px;
-  width: 100%;
-  padding: 48px;
+  max-width: 1000px;
+  width: 90%;
+  padding: 36px;
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -687,5 +687,129 @@ body {
 
   .bubble-input-wrapper textarea {
     height: 100px;
+  }
+}
+
+/* 13. 학습 결과 복습 영역 스타일 */
+.review-section {
+  width: 100%;
+  margin-top: 10px;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.review-section h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1a202c;
+  border-bottom: 2px solid var(--primary-light);
+  padding-bottom: 8px;
+}
+
+.review-sub {
+  font-size: 13.5px;
+  color: var(--text-muted);
+}
+
+.review-list {
+  max-height: 380px;
+  overflow-y: auto;
+  padding-right: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* 스크롤바 커스텀 */
+.review-list::-webkit-scrollbar {
+  width: 6px;
+}
+.review-list::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 3px;
+}
+.review-list::-webkit-scrollbar-thumb {
+  background: #cbd5e0;
+  border-radius: 3px;
+}
+.review-list::-webkit-scrollbar-thumb:hover {
+  background: #a0aec0;
+}
+
+.review-item {
+  background: #f8fafc;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.review-q {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-main);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.review-q-cat {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--primary);
+  background: var(--primary-light);
+  padding: 3px 8px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.review-answers-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.review-ans-box {
+  background: #fff;
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+  border: 1px solid rgba(228, 232, 240, 0.8);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  box-shadow: var(--shadow-sm);
+}
+
+.review-ans-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.review-ans-content {
+  font-size: 13.5px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: keep-all;
+  color: var(--text-main);
+}
+
+.review-ans-box.user {
+  border-left: 4px solid var(--primary);
+}
+
+.review-ans-box.official {
+  border-left: 4px solid var(--success);
+  background: hsl(var(--hue-success), 90%, 99%);
+}
+
+@media (max-width: 768px) {
+  .review-answers-grid {
+    grid-template-columns: 1fr;
   }
 }

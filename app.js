@@ -109,6 +109,9 @@ function loadQuestion() {
 function checkAnswer() {
   const currentQuestion = state.shuffledQuestions[state.currentIndex];
   
+  // 사용자가 수기 입력한 내용 상태에 저장 (나중에 복습 화면에서 사용)
+  currentQuestion.userAnswer = userAnswerInput.value;
+  
   // 오른쪽 정답 카드 잠금 해제 및 실제 내용 바인딩
   solutionCard.classList.remove('locked');
   solutionText.textContent = currentQuestion.answer;
@@ -144,11 +147,56 @@ function goToNext() {
 }
 
 /**
- * 6. 전체 문제 풀이 완료 화면 표시 함수
+ * HTML 특수문자 이스케이프 함수 (사용자 입력값 안전 출력용)
+ */
+function escapeHtml(text) {
+  if (!text) return '';
+  return text
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+/**
+ * 6. 전체 문제 풀이 완료 화면 표시 함수 및 내가 쓴 답과 정답 비교 생성
  */
 function showFinishScreen() {
   quizScreen.classList.remove('active');
   finishScreen.classList.add('active');
+  
+  const reviewList = document.getElementById('review-list');
+  reviewList.innerHTML = ''; // 기존 목록 비우기
+  
+  // 셔플된 전체 문제를 순회하며 복습 카드 생성
+  state.shuffledQuestions.forEach((q, idx) => {
+    const item = document.createElement('div');
+    item.className = 'review-item';
+    
+    // 답변이 없거나 공백인 경우 처리
+    const userAnswerText = (q.userAnswer && q.userAnswer.trim()) 
+      ? q.userAnswer 
+      : "(입력한 대화 내용이 없습니다)";
+    
+    item.innerHTML = `
+      <div class="review-q">
+        <span>Q${idx + 1}. ${q.question}</span>
+        <span class="review-q-cat">${q.category}</span>
+      </div>
+      <div class="review-answers-grid">
+        <div class="review-ans-box user">
+          <div class="review-ans-title">내가 작성한 답변</div>
+          <div class="review-ans-content">${escapeHtml(userAnswerText)}</div>
+        </div>
+        <div class="review-ans-box official">
+          <div class="review-ans-title">기관 공식 가이드 정답</div>
+          <div class="review-ans-content">${escapeHtml(q.answer)}</div>
+        </div>
+      </div>
+    `;
+    reviewList.appendChild(item);
+  });
 }
 
 /* 7. 이벤트 리스너 바인딩 및 부가 편의 기능 */
